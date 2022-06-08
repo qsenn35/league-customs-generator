@@ -15,7 +15,7 @@ const PlayerInputGroup = (playerId) => {
         <option value="PLAT">Plat</option>
         <option value="DIAMOND">Diamond</option>
         <option value="MASTERS">Masters</option>
-        <option value="GRAND_MASTERS">Grand Masters</option>
+        <option value="GRAND_MASTERS">Grandmasters</option>
         <option value="CHALLENGER">Challenger</option>
       </select>
     </label>
@@ -23,7 +23,7 @@ const PlayerInputGroup = (playerId) => {
       Primary Role
       <select class="PlayersForm__player-input-primary-role">
         <option value="TOP">Top</option>
-        <option value="JUNGLE">Top</option>
+        <option value="JUNGLE">Jungle</option>
         <option value="MID">Mid</option>
         <option value="BOT">Bot</option>
         <option value="SUPPORT">Support</option>
@@ -34,7 +34,7 @@ const PlayerInputGroup = (playerId) => {
       Secondary Role
       <select class="PlayersForm__player-input-secondary-role">
         <option value="TOP">Top</option>
-        <option value="JUNGLE">Top</option>
+        <option value="JUNGLE">Jungle</option>
         <option value="MID">Mid</option>
         <option value="BOT">Bot</option>
         <option value="SUPPORt">Support</option>
