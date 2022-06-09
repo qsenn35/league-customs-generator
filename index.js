@@ -121,6 +121,7 @@ const generateTeams = (players) => {
   // render teams tables
   const teamsHTML = TeamsTable(balancedTeamOne, balancedTeamTwo);
   teamsTablesWrapper.innerHTML = teamsHTML;
+  window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
 const handlePlayersFormSubmit = (e) => {
