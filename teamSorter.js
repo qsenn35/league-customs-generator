@@ -296,7 +296,8 @@ const calcTeamValue = (team) => {
 
 const teamToPlayerArray = (team) => {
   return Object.entries(team).map(([role, player]) => {
-    player.assignedRole = role;
+    if (player)
+      player.assignedRole = role;
     return player;
   });
 };
@@ -336,6 +337,7 @@ const balanceTeamsByRank = (teamOne, teamTwo) => {
     bot: null,
     support: null,
   };
+  console.log(teamOne, teamTwo);
   const teamOnePlayers = teamToPlayerArray(teamOne);
   const teamTwoPlayers = teamToPlayerArray(teamTwo);
   const mergedPlayers = [...teamOnePlayers, ...teamTwoPlayers];
