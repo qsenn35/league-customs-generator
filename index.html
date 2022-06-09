@@ -3,32 +3,116 @@
   <title>LoL Customs Team Sorter</title>
 
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap');
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: sans-serif, arial;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    body.App__dark-mode, body.App__dark-mode .App__card {
+      color: #ededed;
+      background: rgb(24, 24, 24);
+    }
+
+    a {
+      color: rgb(131, 131, 250);
+    }
+    
+    .App__card {
+      background: white;
+      border-radius: 25px;
+      padding: 30px;
+      margin: 30px;
+      filter: drop-shadow(0 0 0.75rem silver);
+    }
+
+    body.App__dark-mode .App__card {
+      filter: drop-shadow(0 0 0.75rem black);
+    }
+
+    .PlayersForm__player-input-groups {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .PlayersForm__player-input-group {
+      height: 400px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      padding: 20px;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    label > input, label > select {
+      margin-top: 10px;
+      border: 1px solid silver;
+      border-radius: 5px;
+      font-family: 'Manrope';
+      font-weight: bold;
+    }
+
+    label > input {
+      height: 30px;
+      padding: 10px;
+    }
+
+    label > select {
+      height: 32px;
+    }
+
+    button {
+      cursor: pointer;
+      border: 1px solid rgb(0, 97, 0);
+      color: rgb(0, 97, 0);
+      background: rgb(198, 253, 198);
+      padding: .5em .5em .5em .5em;
+      border-radius: 25px;
+      font-size: 1.2em;
+      width: 300px;
+      position: relative;
+      left: 50%;
+      transform: translate(-50%);
     }
   </style>
   <script src="./teamSorter.js"></script>
 </head>
 <body>
-  <h1>LoL Customs Team Sorter</h1>
-  <p>Made by Lotus <b><a href="https://github.com/helloitsian">Github</a> | <a href="https://twitter.com/lotuscarry">Twitter</a></b> </p>
-  <hr></hr>
-  <h2>How it Works</h2>
-  <p>
-    This team sorter prioritizes role selection over rank, then does it's best to balance the teams by rank.
-    It supports primary/secondary roles, fill, and auto-fill.
-    To specify a player for fill, set their primary role as Fill and select any role for secondary (secondary role won't be used).
-    Currently, secondary fill is not supported.
-  </p>
-  <h2>Teams</h2>
-  <div id="team-tables-wrapper">
-    Enter some player data to generate the teams!
+  <div class="App__card">
+    <h1>LoL Customs Team Sorter</h1>
+    <p>Made by Lotus <b><a href="https://github.com/helloitsian" target="_blank">Github</a> | <a href="https://twitter.com/lotuscarry" target="_blank">Twitter</a></b> </p>
   </div>
-  <form className="PlayersForm" id="players-form">
-    <h2>Players</h2>
-    <div class="PlayersForm__player-input-groups"></div>
-    <button type="submit">Submit</submit>
-  </form>
-
+  <div class="App__card">
+    <h2>How it Works</h2>
+    <p>
+      This team sorter prioritizes role selection over rank, then does it's best to balance the teams by rank.
+      It supports primary/secondary roles, fill, and auto-fill.
+      To specify a player for fill, set their primary role as Fill and select any role for secondary (secondary role won't be used).
+      Currently, secondary fill is not supported.
+    </p>
+  </div>
+  <div class="App__card">
+    <h2>Teams</h2>
+    <div id="team-tables-wrapper">
+      Enter some player data to generate the teams!
+    </div>
+  </div>
+  <div class="App__card">
+    <form className="PlayersForm" id="players-form">
+      <h2>Players</h2>
+      <div class="PlayersForm__player-input-groups"></div>
+      <button type="submit">Make Teams!</submit>
+    </form>
+  </div>
   <script src="./index.js"></script>
 </body>
