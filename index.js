@@ -15,7 +15,7 @@ const PlayerInputGroup = (playerId) => {
         <option value="PLAT">Plat</option>
         <option value="DIAMOND">Diamond</option>
         <option value="MASTERS">Masters</option>
-        <option value="GRAND_MASTERS">Grandmasters</option>
+        <option value="GRANDMASTERS">Grandmasters</option>
         <option value="CHALLENGER">Challenger</option>
       </select>
     </label>
@@ -46,10 +46,12 @@ const PlayerInputGroup = (playerId) => {
 
 const TeamsTable = (teamOne, teamTwo) => {
   let ret = `
-    <h3>Team 1:</h3>
+    <h3>Team 1 (${teamOne.teamValue}):</h3>
     <table>
   `
   Object.entries(teamOne).forEach(([role, player]) => {
+    if (role === "teamValue")
+      return;
     if (!player) {
       ret += `
         <tr>
@@ -68,11 +70,15 @@ const TeamsTable = (teamOne, teamTwo) => {
       `;
   });
 
-  ret += "</table>"
-  ret += "<h3>Team 2</h3>"
-  ret += "<table>"
+  ret += `
+    </table>
+    <h3>Team 2 (${teamTwo.teamValue}):</h3>
+    <table>
+  `
 
   Object.entries(teamTwo).forEach(([role, player]) => {
+    if (role === "teamValue")
+      return;
     if (!player) {
       ret += `
         <tr>
@@ -92,8 +98,6 @@ const TeamsTable = (teamOne, teamTwo) => {
   });
 
   ret += "</table>"
-  
-  console.log(ret);
   return ret;
 };
 
@@ -107,6 +111,7 @@ for (let i = 1; i <= 10; i++)
 
 const generateTeams = (players) => {
   players = assignPlayerRankValues(players);
+  players = sortPlayersByRankValue(players);
   const { teamOne, teamTwo } = generateTeamsByRole(players);
   const { balancedTeamOne, balancedTeamTwo } = balanceTeamsByRank(
     teamOne,

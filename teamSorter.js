@@ -4,7 +4,7 @@ const GOLD = "GOLD";
 const PLAT = "PLAT";
 const DIAMOND = "DIAMOND";
 const MASTERS = "MASTERS";
-const GRAND_MASTERS = "GRAND_MASTERS";
+const GRANDMASTERS = "GRANDMASTERS";
 const CHALLENGER = "CHALLENGER";
 
 const TOP = "TOP";
@@ -21,7 +21,7 @@ const RANK_VALUES = {
   PLAT: 4,
   DIAMOND: 5,
   MASTERS: 6,
-  GRAND_MASTERS: 7,
+  GRANDMASTERS: 7,
   CHALLENGER: 8,
 };
 
@@ -43,13 +43,13 @@ const assignPlayerRankValues = (players) => {
     player.rankValue = RANK_VALUES[player.rank];
     return player;
   });
-}
+};
 
-const sortPlayersByRankValue = () => {
+const sortPlayersByRankValue = (players) => {
   return players.sort((a, b) => {
     return a.rankValue - b.rankValue;
   });
-}
+};
 
 const seperatePlayersByRole = (players) => {
   let topPlayers = [];
@@ -289,6 +289,7 @@ const generateTeamsByRole = (players) => {
 
 const calcTeamValue = (team) => {
   return Object.values(team).reduce((teamValue, player) => {
+    if (!player) return teamValue;
     return teamValue + player.rankValue;
   }, 0);
 };
@@ -298,6 +299,26 @@ const teamToPlayerArray = (team) => {
     player.assignedRole = role;
     return player;
   });
+};
+
+const findNextLowEloByRole = (team, players) => {
+  for (let j = 0; j < players.length; j++) {
+    let p = players[j];
+    if (!team[p.assignedRole]) {
+      players.splice(j, 1);
+      return p;
+    }
+  }
+};
+
+const findNextHighEloByRole = (team, players) => {
+  for (let j = players.length - 1; j >= 0; j--) {
+    let p = players[j];
+    if (!team[p.assignedRole]) {
+      players.splice(j, 1);
+      return p;
+    }
+  }
 };
 
 const balanceTeamsByRank = (teamOne, teamTwo) => {
@@ -319,63 +340,52 @@ const balanceTeamsByRank = (teamOne, teamTwo) => {
   const teamTwoPlayers = teamToPlayerArray(teamTwo);
   const mergedPlayers = [...teamOnePlayers, ...teamTwoPlayers];
 
-  let alternate = false;
-  let secondAlternate = false;
-  let thirdAlternate = false;
+  let teamOneValue = 0;
+  let teamTwoValue = 0;
   let clonedMergedPlayers = [...mergedPlayers].sort(
     (a, b) => a.rankValue - b.rankValue
   );
+  let teamAlternator = 1;
+  let i = 0;
+  while (clonedMergedPlayers.length && i < 10) {
+    // to avoid infinite loops when testing
 
-  while (clonedMergedPlayers.length) {
     let player = null;
-    if (alternate) {
-      if (secondAlternate) {
-        player = clonedMergedPlayers.pop();
+    teamOneValue = calcTeamValue(balancedTeamOne);
+    teamTwoValue = calcTeamValue(balancedTeamTwo);
 
-        if (!balancedTeamOne[player.assignedRole])
-          balancedTeamOne[player.assignedRole] = player;
-        else if (!balancedTeamTwo[player.assignedRole])
-          balancedTeamTwo[player.assignedRole] = player;
-
-        secondAlternate = false;
+    if (teamAlternator === 1) {
+      if (teamOneValue > teamTwoValue) {
+        player = findNextLowEloByRole(balancedTeamOne, clonedMergedPlayers);
+      } else if (teamOneValue < teamTwoValue) {
+        player = findNextHighEloByRole(balancedTeamOne, clonedMergedPlayers);
       } else {
-        player = clonedMergedPlayers.shift();
-
-        if (!balancedTeamOne[player.assignedRole])
-          balancedTeamOne[player.assignedRole] = player;
-        else if (!balancedTeamTwo[player.assignedRole])
-          balancedTeamTwo[player.assignedRole] = player;
-
-        secondAlternate = true;
+        player = findNextLowEloByRole(balancedTeamOne, clonedMergedPlayers);
       }
 
-      alternate = false;
+      if (player) balancedTeamOne[player.assignedRole] = player;
     } else {
-      if (thirdAlternate) {
-        player = clonedMergedPlayers.pop();
-
-        if (!balancedTeamTwo[player.assignedRole])
-          balancedTeamTwo[player.assignedRole] = player;
-        else if (!balancedTeamOne[player.assignedRole])
-          balancedTeamOne[player.assignedRole] = player;
-
-        thirdAlternate = false;
+      if (teamOneValue > teamTwoValue) {
+        player = findNextHighEloByRole(balancedTeamTwo, clonedMergedPlayers);
+      } else if (teamOneValue < teamTwoValue) {
+        player = findNextLowEloByRole(balancedTeamTwo, clonedMergedPlayers);
       } else {
-        player = clonedMergedPlayers.shift();
-
-        if (!balancedTeamTwo[player.assignedRole])
-          balancedTeamTwo[player.assignedRole] = player;
-        else if (!balancedTeamOne[player.assignedRole])
-          balancedTeamOne[player.assignedRole] = player;
-
-        thirdAlternate = true;
+        player = findNextLowEloByRole(balancedTeamTwo, clonedMergedPlayers);
       }
-      alternate = true;
+      
+      if (player) balancedTeamTwo[player.assignedRole] = player;
     }
+    if (teamAlternator === 1) teamAlternator = 2;
+    else teamAlternator = 1;
+
+    i++;
   }
 
-  return {
-    balancedTeamOne,
-    balancedTeamTwo,
-  };
+    balancedTeamOne.teamValue = calcTeamValue(balancedTeamOne);
+    balancedTeamTwo.teamValue = calcTeamValue(balancedTeamTwo);
+
+    return {
+      balancedTeamOne,
+      balancedTeamTwo,
+    };
 };
